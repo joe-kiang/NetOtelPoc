@@ -1,0 +1,60 @@
+version: '3.8'
+services:
+  api:
+    build: ./PocApi
+    ports:
+      - "8860:8080"
+    depends_on:
+      - rabbitmq
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+  worker:
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=microDB;User Id=sa;Password=U6cFvFW9;TrustServerCertificate=True
+    build: ./PocWorker
+    depends_on:
+      - rabbitmq
+    ports:
+      - "8090:5001"
+  sqlserver:
+    image: "mcr.microsoft.com/mssql/server:2019-latest"
+    environment:
+      SA_PASSWORD: "U6cFvFW9"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.0
+    environment:
+      - discovery.type=single-node
+    ports:
+      - "9200:9200"
+  kibana:
+      image: docker.elastic.co/kibana/kibana:7.10.0
+      ports:
+        - "5601:5601"
+      depends_on:
+        - elasticsearch
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    command: [ "--config=/etc/otel-collector-config.yml" ]
+    volumes:
+      - ./otel-collector-config.yml:/etc/otel-collector-config.yml
+    ports:
+      - "4317:4317"
+    depends_on:
+      - elasticsearch
+  apm-server:
+    image: docker.elastic.co/apm/apm-server:7.10.0
+    depends_on:
+      - elasticsearch
+    ports:
+      - "8200:8200"
+    volumes:
+      - ./apm-server.yml:/usr/share/apm-server/apm-server.yml
+    environment:
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+      - KIBANA_HOST=kibana:5601

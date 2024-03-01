@@ -1,8 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PocWorker", "PocWorker\PocWorker.csproj", "{65DD8F52-5E8A-416F-B80B-794784E2AFC9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PocConsumer", "PocConsumer\PocConsumer.csproj", "{65DD8F52-5E8A-416F-B80B-794784E2AFC9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PocApi", "PocApi\PocApi.csproj", "{847C314A-EAB1-4FD0-85BE-9B7E58B69527}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PocProducer", "PocProducer\PocProducer.csproj", "{AA9D3EAE-19B0-44AC-AE6B-1FEFE090D15B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,5 +20,9 @@ Global
 		{847C314A-EAB1-4FD0-85BE-9B7E58B69527}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{847C314A-EAB1-4FD0-85BE-9B7E58B69527}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{847C314A-EAB1-4FD0-85BE-9B7E58B69527}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA9D3EAE-19B0-44AC-AE6B-1FEFE090D15B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA9D3EAE-19B0-44AC-AE6B-1FEFE090D15B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA9D3EAE-19B0-44AC-AE6B-1FEFE090D15B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA9D3EAE-19B0-44AC-AE6B-1FEFE090D15B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

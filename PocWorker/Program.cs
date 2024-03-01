@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using OpenTelemetry.Exporter;
@@ -6,28 +7,54 @@ using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using PocWorker;
+using Serilog;
+using Serilog.Sinks.OpenTelemetry;
 
 const string serviceName = "PocWorker";
 
 var builder = Host.CreateApplicationBuilder(args);
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.OpenTelemetry(options =>
+    {
+        options.Endpoint = "http://otel-collector:4317";
+        options.Protocol = OtlpProtocol.Grpc;
+    })
+    .CreateLogger();
 
 builder.Logging.AddOpenTelemetry(options =>
 {
     options.SetResourceBuilder(
             ResourceBuilder.CreateDefault()
                 .AddService(serviceName))
-        .AddOtlpExporter(ops => ops.Endpoint = new Uri("http://otel-collector:4317"));
+        .AddOtlpExporter(ops =>
+        {
+            ops.Endpoint = new Uri("http://otel-collector:4317");
+            ops.Protocol = OtlpExportProtocol.Grpc;
+        });
 });
 builder.Services.AddOpenTelemetry()
     .ConfigureResource(resource => resource
         .AddService(serviceName))
     .WithTracing(tracer => tracer
-        .AddSource("MassTransit")
+        .AddSource("*")
         .AddAspNetCoreInstrumentation()
-        .AddEntityFrameworkCoreInstrumentation())
+        .AddEntityFrameworkCoreInstrumentation(options =>
+        {
+            options.SetDbStatementForText = true;
+        })
+        .AddOtlpExporter(ops =>
+        {
+            ops.Endpoint = new Uri("http://otel-collector:4317");
+            ops.Protocol = OtlpExportProtocol.Grpc;
+        }))
     .WithMetrics(metrics => metrics
         .AddAspNetCoreInstrumentation()
-        .AddOtlpExporter(ops => ops.Endpoint = new Uri("http://otel-collector:4317")));
+        .AddOtlpExporter(ops =>
+        {
+            ops.Endpoint = new Uri("http://otel-collector:4317");
+            ops.Protocol = OtlpExportProtocol.Grpc;
+        }));
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

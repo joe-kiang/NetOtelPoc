@@ -1,4 +1,6 @@
+using System.Diagnostics;
 using MassTransit;
+using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
@@ -18,16 +20,32 @@ builder.Logging.AddOpenTelemetry(options =>
     options.SetResourceBuilder(
             ResourceBuilder.CreateDefault()
                 .AddService(serviceName))
-        .AddOtlpExporter(ops => ops.Endpoint = new Uri("http://otel-collector:4317"));
+        .AddOtlpExporter(ops =>
+        {
+            ops.Endpoint = new Uri("http://otel-collector:4317");
+            ops.Protocol = OtlpExportProtocol.Grpc;
+        });
 });
 builder.Services.AddOpenTelemetry()
     .ConfigureResource(resource => resource
         .AddService(serviceName))
     .WithTracing(tracer => tracer
-        .AddAspNetCoreInstrumentation())
+        .AddSource("*")
+        .AddHttpClientInstrumentation()
+        .AddAspNetCoreInstrumentation()
+        .AddOtlpExporter(ops =>
+        {
+            ops.Endpoint = new Uri("http://otel-collector:4317");
+            ops.Protocol = OtlpExportProtocol.Grpc;
+        }))
     .WithMetrics(metrics => metrics
         .AddAspNetCoreInstrumentation()
-        .AddOtlpExporter(ops => ops.Endpoint = new Uri("http://otel-collector:4317")));
+        .AddHttpClientInstrumentation()
+        .AddOtlpExporter(ops =>
+        {
+            ops.Endpoint = new Uri("http://otel-collector:4317");
+            ops.Protocol = OtlpExportProtocol.Grpc;
+        }));
 
 builder.Services.AddMassTransit(x =>
 {

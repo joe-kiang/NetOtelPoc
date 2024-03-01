@@ -2,17 +2,33 @@ receivers:
   otlp:
     protocols:
       grpc:
+      http:
+    
+processors:
+  memory_limiter:
+    check_interval: 1s
+    limit_mib: 2000
+  batch:
+  
 exporters:
+  otlp/jaeger:
+      endpoint: jaeger:4317
+      tls:
+        insecure: true
   otlp:
-    endpoint: "apm-server:8200" 
+    endpoint: "apm-server:8200"
     tls:
-      insecure: true 
+      insecure: true
+      insecure_skip_verify: true
+    compression: none
 
 service:
   pipelines:
     traces:
       receivers: [otlp]
-      exporters: [otlp]
+      processors : [batch]
+      exporters: [otlp, otlp/jaeger]
     metrics:
       receivers: [otlp]
+      processors : [batch]
       exporters: [otlp]

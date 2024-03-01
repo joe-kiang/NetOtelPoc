@@ -27,13 +27,17 @@ services:
     ports:
       - "1433:1433"
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.0
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.13.0
     environment:
       - discovery.type=single-node
     ports:
-      - "9200:9200"
+      - 9200:9200
+      - 9300:9300
   kibana:
-      image: docker.elastic.co/kibana/kibana:7.10.0
+      image: docker.elastic.co/kibana/kibana:7.13.0
+      environment:
+        SERVER_NAME: localhost
+        ELASTICSEARCH_URL: http://elasticsearch:9200
       ports:
         - "5601:5601"
       depends_on:
@@ -45,16 +49,29 @@ services:
       - ./otel-collector-config.yml:/etc/otel-collector-config.yml
     ports:
       - "4317:4317"
+      - "4318:4318"
     depends_on:
       - elasticsearch
   apm-server:
-    image: docker.elastic.co/apm/apm-server:7.10.0
+    image: docker.elastic.co/apm/apm-server:7.13.0
     depends_on:
       - elasticsearch
     ports:
       - "8200:8200"
-    volumes:
-      - ./apm-server.yml:/usr/share/apm-server/apm-server.yml
+  jaeger:
+    image: jaegertracing/all-in-one
+    container_name: jaeger
+    ports:
+      - 16686:16686
+      - 16685:16685
+      - 14268:14268
+      - 14250:14250
+      - 14317:4317
+      - 9411:9411
     environment:
-      - ELASTICSEARCH_URL=http://elasticsearch:9200
-      - KIBANA_HOST=kibana:5601
+      - COLLECTOR_ZIPKIN_HTTP_PORT=9411
+      - SPAN_STORAGE_TYPE=elasticsearch
+      - ES_SERVER_URLS=http://elasticsearch:9200
+      - ES_INDEX_PREFIX=jaeger
+    depends_on:
+      - elasticsearch

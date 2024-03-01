@@ -1,6 +1,28 @@
 apm-server:
   host: "0.0.0.0:8200"
-output.elasticsearch:
-  hosts: ["elasticsearch:9200"]
+  rum:
+    enabled: true
+    event_rate:
+      limit: 100
+      lru_size: 1000
+  ilm:
+    setup:
+      enabled: false
+      overwrite: false
+  kibana:
+    enabled: true
+    host: "kibana:5601"
+  output.elasticsearch:
+    hosts: ["elasticsearch:9200"]
+  queue:
+    mem:
+      events: 4096
+      flush.min_events: 2048
+      flush.timeout: 1s
+
 setup.kibana:
   host: "kibana:5601"
+  enabled: true
+
+output.console:
+  pretty: true

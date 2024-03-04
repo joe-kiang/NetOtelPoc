@@ -6,6 +6,7 @@ using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using PocWorker;
+using Repository;
 using Serilog;
 using Serilog.Sinks.OpenTelemetry;
 
@@ -75,6 +76,10 @@ builder.Services.AddMassTransit(x =>
         cfg.ReceiveEndpoint("order-queue", e =>
         {
             e.ConfigureConsumer<OrderMessageConsumer>(context);
+        });
+        cfg.ReceiveEndpoint("processed-order-queue", e =>
+        {
+            e.ConfigureConsumer<OrderProcessedConsumer>(context);
         });
     });
 });

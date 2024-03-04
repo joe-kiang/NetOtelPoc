@@ -6,6 +6,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PocApi", "PocApi\PocApi.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PocProducer", "PocProducer\PocProducer.csproj", "{AA9D3EAE-19B0-44AC-AE6B-1FEFE090D15B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueueContracts", "QueueContracts\QueueContracts.csproj", "{68C776A6-627D-48B8-B7D7-AA96846F7E1E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository", "Repository\Repository.csproj", "{075021E4-C0CB-4A94-B08D-22ABF440AA27}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +28,13 @@ Global
 		{AA9D3EAE-19B0-44AC-AE6B-1FEFE090D15B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA9D3EAE-19B0-44AC-AE6B-1FEFE090D15B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA9D3EAE-19B0-44AC-AE6B-1FEFE090D15B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{68C776A6-627D-48B8-B7D7-AA96846F7E1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68C776A6-627D-48B8-B7D7-AA96846F7E1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68C776A6-627D-48B8-B7D7-AA96846F7E1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68C776A6-627D-48B8-B7D7-AA96846F7E1E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{075021E4-C0CB-4A94-B08D-22ABF440AA27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{075021E4-C0CB-4A94-B08D-22ABF440AA27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{075021E4-C0CB-4A94-B08D-22ABF440AA27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{075021E4-C0CB-4A94-B08D-22ABF440AA27}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

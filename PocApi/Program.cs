@@ -1,16 +1,12 @@
-using System.Diagnostics;
 using MassTransit;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
-using Serilog;
-using Serilog.Sinks.OpenTelemetry;
-using Shared.Messaging.Contracts;
+using QueueContracts;
 
 var builder = WebApplication.CreateBuilder(args);
-
 
 const string serviceName = "PocApi";
 

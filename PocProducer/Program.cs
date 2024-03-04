@@ -1,10 +1,11 @@
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using OpenTelemetry.Exporter;
-using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using PocProducer;
+using Repository;
 using Serilog;
 using Serilog.Sinks.OpenTelemetry;
 
@@ -19,18 +20,6 @@ Log.Logger = new LoggerConfiguration()
         options.Protocol = OtlpProtocol.Grpc;
     })
     .CreateLogger();
-
-builder.Logging.AddOpenTelemetry(options =>
-{
-    options.SetResourceBuilder(
-            ResourceBuilder.CreateDefault()
-                .AddService(serviceName))
-        .AddOtlpExporter(ops =>
-        {
-            ops.Endpoint = new Uri("http://otel-collector:4317");
-            ops.Protocol = OtlpExportProtocol.Grpc;
-        });
-});
 
 builder.Services.AddOpenTelemetry()
     .ConfigureResource(resource => resource
@@ -59,6 +48,18 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.EnableSensitiveDataLogging();
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+
+builder.Services.AddMassTransit(x =>
+{
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host("rabbitmq", "/", h =>
+        {
+            h.Username("guest");
+            h.Password("guest");
+        });
+    });
 });
 
 builder.Services.AddHostedService<Worker>();

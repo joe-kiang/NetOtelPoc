@@ -18,7 +18,7 @@
         <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.7.1" />
         <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.7.1" />
         <PackageReference Include="Serilog" Version="3.1.1" />
-        <PackageReference Include="Serilog.Sinks.OpenTelemetry" Version="1.2.0" />
+        <PackageReference Include="Serilog.Sinks.OpenTelemetry" Version="2.0.0-dev-00270" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     </ItemGroup>
 
@@ -26,6 +26,10 @@
       <Content Include="..\.dockerignore">
         <Link>.dockerignore</Link>
       </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\QueueContracts\QueueContracts.csproj" />
     </ItemGroup>
 
 </Project>

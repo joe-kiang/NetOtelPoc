@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics;
-using System.Text;
 using MassTransit;
-using PocWorker;
-using PocWorker.Models;
-using Shared.Messaging.Contracts;
+using QueueContracts;
+using Repository;
+
+namespace PocWorker;
 
 public class OrderMessageConsumer : IConsumer<OrderMessage>
 {
@@ -17,24 +17,19 @@ public class OrderMessageConsumer : IConsumer<OrderMessage>
     }
 
     public async Task Consume(ConsumeContext<OrderMessage> context)
-    { 
-        // string? parentActivityId = null;
-        // if (context.Headers?.TryGetHeader("traceparent", out var parentActivityIdRaw) == true &&
-        //     parentActivityIdRaw is byte[] traceParentBytes)
-        //     parentActivityId = Encoding.UTF8.GetString(traceParentBytes);
-        
-        using var activity = TraceActivitySource.StartActivity(nameof(OrderMessage), kind: ActivityKind.Consumer);
+    {
+        using var activity = TraceActivitySource.StartActivity(nameof(OrderMessage), ActivityKind.Consumer);
 
         var message = context.Message;
 
         var order = new Order
         {
             OrderId = message.OrderId,
-            OrderDate = message.OrderDate
+            OrderDate = message.OrderDate,
+            OrderOrigin = message.OrderOrigin
         };
-
-        activity.SetTag("orderId", order.OrderId);
-        activity.SetTag("orderDate", order.OrderDate);
+        
+        activity.SetTag("orderId", message.OrderId);
 
         await _context.Orders.AddAsync(order);
         await _context.SaveChangesAsync();

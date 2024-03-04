@@ -21,12 +21,21 @@
         <PackageReference Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" Version="1.0.0-beta.10" />
         <PackageReference Include="OpenTelemetry.Instrumentation.SqlClient" Version="1.7.0-beta.1" />
         <PackageReference Include="Serilog" Version="3.1.1" />
-        <PackageReference Include="Serilog.Sinks.OpenTelemetry" Version="1.2.0" />
+        <PackageReference Include="Serilog.Sinks.OpenTelemetry" Version="2.0.0-dev-00270" />
     </ItemGroup>
 
     <ItemGroup>
       <Content Include="..\.dockerignore">
         <Link>.dockerignore</Link>
       </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\QueueContracts\QueueContracts.csproj" />
+      <ProjectReference Include="..\Repository\Repository.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Models\" />
     </ItemGroup>
 </Project>

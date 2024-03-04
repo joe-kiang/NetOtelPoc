@@ -2,23 +2,31 @@ version: '3.8'
 services:
   api:
     build: ./PocApi
-    ports:
-      - "8860:8080"
     depends_on:
       - rabbitmq
+    ports:
+      - "8860:8080"
   rabbitmq:
     image: "rabbitmq:3-management"
     ports:
       - "5672:5672"
       - "15672:15672"
-  worker:
+  consumer:
     environment:
       - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=microDB;User Id=sa;Password=U6cFvFW9;TrustServerCertificate=True
-    build: ./PocWorker
+    build: ./PocConsumer
     depends_on:
       - rabbitmq
     ports:
       - "8090:5001"
+  producer:
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=microDB;User Id=sa;Password=U6cFvFW9;TrustServerCertificate=True
+    build: ./PocProducer
+    depends_on:
+      - rabbitmq
+    ports:
+      - "8091:5002"
   sqlserver:
     image: "mcr.microsoft.com/mssql/server:2019-latest"
     environment:

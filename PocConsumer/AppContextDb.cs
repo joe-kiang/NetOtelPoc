@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PocWorker.Models;
 
-namespace Repository
+namespace PocWorker
 {
     public class AppDbContext : DbContext
     {
@@ -8,6 +9,5 @@ namespace Repository
             : base(options) { }
 
         public DbSet<Order> Orders { get; set; }
-        public DbSet<ProcessedOrder> ProcessedOrders { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Repository
+﻿namespace PocWorker.Models
 {
     public class Order
     {

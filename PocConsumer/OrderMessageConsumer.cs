@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics;
-using System.Text;
 using MassTransit;
-using PocWorker;
 using PocWorker.Models;
 using Shared.Messaging.Contracts;
+
+namespace PocWorker;
 
 public class OrderMessageConsumer : IConsumer<OrderMessage>
 {
@@ -17,7 +17,9 @@ public class OrderMessageConsumer : IConsumer<OrderMessage>
     }
 
     public async Task Consume(ConsumeContext<OrderMessage> context)
-    { 
+    {
+        using var activity = TraceActivitySource.StartActivity(nameof(OrderMessage), ActivityKind.Consumer);
+
         var message = context.Message;
 
         var order = new Order
@@ -26,6 +28,8 @@ public class OrderMessageConsumer : IConsumer<OrderMessage>
             OrderDate = message.OrderDate,
             OrderOrigin = message.OrderOrigin
         };
+        
+        activity.SetTag("orderId", message.OrderId);
 
         await _context.Orders.AddAsync(order);
         await _context.SaveChangesAsync();

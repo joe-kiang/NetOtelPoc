@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,8 +28,8 @@ public class Worker : BackgroundService
                 
                 foreach (var order in orders)
                 {
-                    await _bus.Publish(order, stoppingToken);
                     _logger.LogInformation($"Published order {order.OrderId}");
+                    await _bus.Publish(order, stoppingToken);
                 }
             }
             await Task.Delay(10000, stoppingToken);

@@ -11,24 +11,24 @@ processors:
   batch:
   
 exporters:
-  otlp/jaeger:
-      endpoint: jaeger:4317
-      tls:
-        insecure: true
   otlp:
-    endpoint: "apm-server:8200"
+    endpoint: "es-cluster-fleet-server-1:8200"
     tls:
       insecure: true
-      insecure_skip_verify: true
-    compression: none
-
+    headers:
+      Authorization: "Bearer supersecrettoken"
+      compression: none
 service:
   pipelines:
     traces:
       receivers: [otlp]
       processors : [batch]
-      exporters: [otlp, otlp/jaeger]
+      exporters: [otlp]
     metrics:
       receivers: [otlp]
       processors : [batch]
+      exporters: [otlp]
+    logs:
+      receivers: [otlp]
+      processors: [batch]
       exporters: [otlp]

@@ -7,39 +7,32 @@ namespace PocProducer;
 public class Worker : BackgroundService
 {
     private readonly ILogger<Worker> _logger;
-    private readonly IPublishEndpoint _publishEndpoint;
-    private readonly AppDbContext _dbContext;
-    private readonly ActivitySource _activitySource;
-
-    public Worker(ILogger<Worker> logger, IPublishEndpoint publishEndpoint, AppDbContext dbContext, ActivitySource activitySource)
+    private readonly IBus _bus;
+    private readonly IServiceProvider _provider;
+    public Worker(ILogger<Worker> logger, IBus bus, IServiceProvider provider)
     {
         _logger = logger;
-        _publishEndpoint = publishEndpoint;
-        _dbContext = dbContext;
-        _activitySource = new ActivitySource("OrderProducer");
+        _bus = bus;
+        _provider = provider;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            using var span = _activitySource.StartActivity("Producing Orders");
-            
             _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
 
-            var orders = await _dbContext.Orders.ToListAsync(stoppingToken);
-
-            span.AddEvent(new ActivityEvent("Orders Retrived"));
-            span.SetTag("Count", orders.Count);
-            
-            foreach (var order in orders)
+            using (var scope = _provider.CreateScope())
             {
-                await _publishEndpoint.Publish(order, stoppingToken);
-                _logger.LogInformation($"Published order {order.OrderId}");
+                var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                var orders = await dbContext.Orders.ToListAsync(stoppingToken);
+                
+                foreach (var order in orders)
+                {
+                    await _bus.Publish(order, stoppingToken);
+                    _logger.LogInformation($"Published order {order.OrderId}");
+                }
             }
-
-            span.AddEvent(new ActivityEvent("Finish Sending"));
-
             await Task.Delay(10000, stoppingToken);
         }
     }

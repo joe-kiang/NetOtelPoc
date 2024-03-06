@@ -18,23 +18,14 @@ public class OrderMessageConsumer : IConsumer<OrderMessage>
 
     public async Task Consume(ConsumeContext<OrderMessage> context)
     { 
-        // string? parentActivityId = null;
-        // if (context.Headers?.TryGetHeader("traceparent", out var parentActivityIdRaw) == true &&
-        //     parentActivityIdRaw is byte[] traceParentBytes)
-        //     parentActivityId = Encoding.UTF8.GetString(traceParentBytes);
-        
-        using var activity = TraceActivitySource.StartActivity(nameof(OrderMessage), kind: ActivityKind.Consumer);
-
         var message = context.Message;
 
         var order = new Order
         {
             OrderId = message.OrderId,
-            OrderDate = message.OrderDate
+            OrderDate = message.OrderDate,
+            OrderOrigin = message.OrderOrigin
         };
-
-        activity.SetTag("orderId", order.OrderId);
-        activity.SetTag("orderDate", order.OrderDate);
 
         await _context.Orders.AddAsync(order);
         await _context.SaveChangesAsync();

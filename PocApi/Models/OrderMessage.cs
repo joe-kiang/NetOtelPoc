@@ -2,7 +2,8 @@
 {
     public class OrderMessage
     {
-        public Guid OrderId { get; set; }
-        public DateTime OrderDate { get; set; }
+        public Guid OrderId = new Guid();
+        public DateTime OrderDate = DateTime.Now;
+        public string? OrderOrigin { get; set; }
     }
 }

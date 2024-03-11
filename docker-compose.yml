@@ -199,7 +199,7 @@ services:
     ports:
       - "8860:8080"
     env_file:
-      - PocApi/otel-dotnet.env 
+      - ./otel-dotnet.env 
     environment:
       OTEL_SERVICE_NAME: "api"
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4318"
@@ -210,7 +210,7 @@ services:
   worker:
     build: ./PocConsumer
     env_file:
-      - PocConsumer/otel-dotnet.env
+      - ./otel-dotnet.env
     environment:
       ConnectionStrings__DefaultConnection: "Server=sqlserver;Database=microDB;User Id=sa;Password=U6cFvFW9;TrustServerCertificate=True;"
       OTEL_SERVICE_NAME: "consumer"
@@ -221,14 +221,27 @@ services:
       - otel-collector
     ports:
       - "8090:5001"
+  worker-process:
+    build: ./PocProcessConsumer
+    env_file:
+      - ./otel-dotnet.env
+    environment:
+      OTEL_SERVICE_NAME: "consumerProcess"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4318"
+    depends_on:
+      - sqlserver
+      - rabbitmq
+      - otel-collector
+    ports:
+      - "8092:5003"
 
   producer:
     build: ./PocProducer
     env_file:
-      - PocProducer/otel-dotnet.env
+      - ./otel-dotnet.env
     environment:
       ConnectionStrings__DefaultConnection: "Server=sqlserver;Database=microDB;User Id=sa;Password=U6cFvFW9;TrustServerCertificate=True;"
-      OTEL_SERVICE_NAME: "producer"
+      OTEL_SERVICE_NAME: "producerProcess"
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4318"
     depends_on:
       - sqlserver
@@ -263,3 +276,26 @@ services:
       - "4318:4318"
     depends_on:
       - fleet-server
+
+  jaeger:
+    image: jaegertracing/all-in-one
+    container_name: jaeger
+    ports:
+      - 16686:16686
+      - 16685:16685
+      - 14268:14268
+      - 14250:14250
+      - 14317:4317
+      - 9411:9411
+  
+  redis:
+    image: redis:7.2.4-alpine
+    container_name: redis
+    user: redis
+    deploy:
+      resources:
+        limits:
+          memory: 20M
+    restart: unless-stopped
+    ports:
+      - 6379:6379

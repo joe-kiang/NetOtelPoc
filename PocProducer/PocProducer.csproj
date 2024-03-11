@@ -28,8 +28,4 @@
       </Content>
     </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\QueueContracts\QueueContracts.csproj" />
-      <ProjectReference Include="..\Repository\Repository.csproj" />
-    </ItemGroup>
 </Project>

@@ -8,8 +8,7 @@ namespace PocWorker;
 public class OrderMessageConsumer : IConsumer<OrderMessage>
 {
     private readonly AppDbContext _context;
-    public static readonly string TraceActivityName = typeof(OrderMessageConsumer).FullName!;
-    private static readonly ActivitySource TraceActivitySource = new (TraceActivityName);
+    private static readonly ActivitySource TraceActivitySource = new ("Poc.Consumer.Order");
 
     public OrderMessageConsumer(AppDbContext context)
     {
@@ -18,7 +17,7 @@ public class OrderMessageConsumer : IConsumer<OrderMessage>
 
     public async Task Consume(ConsumeContext<OrderMessage> context)
     {
-        using var activity = TraceActivitySource.StartActivity(nameof(OrderMessage), ActivityKind.Consumer);
+        using var activity = TraceActivitySource.StartActivity(nameof(Consume), kind: ActivityKind.Consumer);
 
         var message = context.Message;
 
@@ -26,10 +25,11 @@ public class OrderMessageConsumer : IConsumer<OrderMessage>
         {
             OrderId = message.OrderId,
             OrderDate = message.OrderDate,
-            OrderOrigin = message.OrderOrigin
+            OrderOrigin = message.OrderOrigin,
+            OrderTraceId = activity.TraceId.ToHexString()
         };
         
-        activity.SetTag("orderId", message.OrderId);
+        activity?.SetTag("orderId", message.OrderId);
 
         await _context.Orders.AddAsync(order);
         await _context.SaveChangesAsync();

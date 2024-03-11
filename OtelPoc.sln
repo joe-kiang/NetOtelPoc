@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PocApi", "PocApi\PocApi.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PocProducer", "PocProducer\PocProducer.csproj", "{AA9D3EAE-19B0-44AC-AE6B-1FEFE090D15B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PocProcessConsumer", "PocProcessConsumer\PocProcessConsumer.csproj", "{9EE4F895-2CC5-44EF-BE54-79E93C6D2263}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{AA9D3EAE-19B0-44AC-AE6B-1FEFE090D15B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA9D3EAE-19B0-44AC-AE6B-1FEFE090D15B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA9D3EAE-19B0-44AC-AE6B-1FEFE090D15B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9EE4F895-2CC5-44EF-BE54-79E93C6D2263}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9EE4F895-2CC5-44EF-BE54-79E93C6D2263}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9EE4F895-2CC5-44EF-BE54-79E93C6D2263}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9EE4F895-2CC5-44EF-BE54-79E93C6D2263}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

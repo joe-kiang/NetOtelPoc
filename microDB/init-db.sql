@@ -13,7 +13,9 @@ CREATE TABLE Orders
 (
     OrderId uniqueidentifier NOT NULL CONSTRAINT Orders_pk PRIMARY KEY,
     OrderDate datetime NOT NULL,
-    OrderOrigin varchar(255)
+    OrderOrigin varchar(255),
+    OrderTraceId  varchar(50),
+    ProcessedDate datetime
 );
 END
 GO

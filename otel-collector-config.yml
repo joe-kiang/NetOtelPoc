@@ -11,6 +11,10 @@ processors:
   batch:
   
 exporters:
+  otlp/jaeger:
+    endpoint: jaeger:4317
+    tls:
+      insecure: true
   otlp:
     endpoint: "es-cluster-fleet-server-1:8200"
     tls:
@@ -23,7 +27,7 @@ service:
     traces:
       receivers: [otlp]
       processors : [batch]
-      exporters: [otlp]
+      exporters: [otlp, otlp/jaeger]
     metrics:
       receivers: [otlp]
       processors : [batch]

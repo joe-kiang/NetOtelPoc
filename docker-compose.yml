@@ -84,6 +84,7 @@ services:
     ports:
       - ${ES_PORT}:9200
     environment:
+      - TZ=America/Fortaleza
       - node.name=es01
       - cluster.name=${CLUSTER_NAME}
       - discovery.type=single-node
@@ -129,6 +130,7 @@ services:
     ports:
       - ${KIBANA_PORT}:5601
     environment:
+      - TZ=America/Fortaleza
       - SERVERNAME=kibana
       - ELASTICSEARCH_HOSTS=https://es01:9200
       - ELASTICSEARCH_USERNAME=kibana_system
@@ -174,6 +176,7 @@ services:
       - ${APMSERVER_PORT}:8200
     user: root
     environment:
+      - TZ=America/Fortaleza
       - SSL_CERTIFICATE_AUTHORITIES=/certs/ca/ca.crt
       - CERTIFICATE_AUTHORITIES=/certs/ca/ca.crt
       - FLEET_CA=/certs/ca/ca.crt
@@ -201,6 +204,7 @@ services:
     env_file:
       - ./otel-dotnet.env 
     environment:
+      TZ: America/Fortaleza
       OTEL_SERVICE_NAME: "api"
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4318"
     depends_on:
@@ -212,6 +216,7 @@ services:
     env_file:
       - ./otel-dotnet.env
     environment:
+      TZ: America/Fortaleza
       ConnectionStrings__DefaultConnection: "Server=sqlserver;Database=microDB;User Id=sa;Password=U6cFvFW9;TrustServerCertificate=True;"
       OTEL_SERVICE_NAME: "consumer"
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4318"
@@ -226,6 +231,7 @@ services:
     env_file:
       - ./otel-dotnet.env
     environment:
+      TZ: America/Fortaleza
       OTEL_SERVICE_NAME: "consumerProcess"
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4318"
     depends_on:
@@ -240,6 +246,7 @@ services:
     env_file:
       - ./otel-dotnet.env
     environment:
+      TZ: America/Fortaleza
       ConnectionStrings__DefaultConnection: "Server=sqlserver;Database=microDB;User Id=sa;Password=U6cFvFW9;TrustServerCertificate=True;"
       OTEL_SERVICE_NAME: "producerProcess"
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4318"
@@ -251,6 +258,8 @@ services:
       - "8091:5002"
 
   rabbitmq:
+    environment:
+      - TZ=America/Fortaleza
     image: "rabbitmq:3-management"
     ports:
       - "5672:5672"
@@ -261,6 +270,7 @@ services:
       context: ./microDB
       dockerfile: Dockerfile
     environment:
+      TZ: America/Fortaleza
       SA_PASSWORD: "U6cFvFW9"
       ACCEPT_EULA: "Y"
     ports:
@@ -276,8 +286,12 @@ services:
       - "4318:4318"
     depends_on:
       - fleet-server
+    environment:
+      - TZ=America/Fortaleza
 
   jaeger:
+    environment:
+      - TZ=America/Fortaleza
     image: jaegertracing/all-in-one
     container_name: jaeger
     ports:
@@ -289,6 +303,8 @@ services:
       - 9411:9411
   
   redis:
+    environment:
+      - TZ=America/Fortaleza
     image: redis:7.2.4-alpine
     container_name: redis
     user: redis
